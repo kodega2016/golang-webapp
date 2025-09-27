@@ -2,9 +2,11 @@
 package render
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
+	"path/filepath"
 	"text/template"
 )
 
@@ -19,39 +21,61 @@ func RenderTemplateTest(w http.ResponseWriter, tmpl string) {
 	}
 }
 
-// variable to hold the template cache
-var tc = make(map[string]*template.Template)
-
-func RenderTemplate(w http.ResponseWriter, t string) {
-	var tmpl *template.Template
-	var err error
-
-	// check if the template is already available in the cache or not
-	_, inMap := tc[t]
-	if inMap {
-		// template is already available in the template cache
-		log.Println("template is already available in the cache")
-	} else {
-		log.Println("creating template")
-		createTemplateCache(t)
+func RenderTemplate(w http.ResponseWriter, tmpl string) {
+	tc, err := createTemplateCache()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	tmpl = tc[t]
-	err = tmpl.Execute(w, nil)
+	t, ok := tc[tmpl]
+
+	if !ok {
+		log.Fatal(err)
+	}
+
+	buff := new(bytes.Buffer)
+	err = t.Execute(buff, nil)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
+	}
+
+	_, err = buff.WriteTo(w)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
-func createTemplateCache(t string) error {
-	templates := []string{
-		"./templates/" + t,
-		"./templates/base.layout.tmpl",
-	}
-	tmpl, err := template.ParseFiles(templates...)
+func createTemplateCache() (map[string]*template.Template, error) {
+	myCache := map[string]*template.Template{}
+
+	// get all pages from the templates directory
+	pages, err := filepath.Glob("./templates/*.page.tmpl")
 	if err != nil {
-		return err
+		return myCache, err
 	}
-	tc[t] = tmpl
-	return nil
+
+	// loop through the pages and create template
+	for _, page := range pages {
+		name := filepath.Base(page)
+		ts, err := template.New(name).ParseFiles(page)
+		if err != nil {
+			return nil, err
+		}
+
+		matches, err := filepath.Glob("./templates/*.layout.tmpl")
+		if err != nil {
+			return nil, err
+		}
+
+		if len(matches) > 0 {
+			ts, err = ts.ParseGlob("./templates/*.layout.tmpl")
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		myCache[name] = ts
+	}
+
+	return myCache, nil
 }
