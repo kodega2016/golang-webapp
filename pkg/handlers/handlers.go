@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/kodega2016/booking-app/pkg/config"
+	"github.com/kodega2016/booking-app/pkg/models"
 	"github.com/kodega2016/booking-app/pkg/render"
 )
 
@@ -26,9 +27,14 @@ func NewHandlers(r *Repository) {
 }
 
 func (*Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 func (*Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.tmpl")
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hello World"
+
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }

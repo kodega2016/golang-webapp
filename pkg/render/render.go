@@ -9,6 +9,7 @@ import (
 	"text/template"
 
 	"github.com/kodega2016/booking-app/pkg/config"
+	"github.com/kodega2016/booking-app/pkg/models"
 )
 
 var app *config.AppConfig
@@ -18,7 +19,11 @@ func NewTemplates(newConfig *config.AppConfig) {
 	app = newConfig
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -33,8 +38,10 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 		log.Fatal("failed to get the template:")
 	}
 
+	td = AddDefaultData(td)
+
 	buff := new(bytes.Buffer)
-	err := t.Execute(buff, nil)
+	err := t.Execute(buff, td)
 	if err != nil {
 		log.Fatal(err)
 	}
