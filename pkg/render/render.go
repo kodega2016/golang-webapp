@@ -3,38 +3,31 @@ package render
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
 	"text/template"
+
+	"github.com/kodega2016/booking-app/pkg/config"
 )
 
-// RenderTemplateTest renders the html content using html template
-func RenderTemplateTest(w http.ResponseWriter, tmpl string) {
-	parsedTemplate, _ := template.ParseFiles("./templates/"+tmpl, "./templates/base.layout.tmpl")
+var app *config.AppConfig
 
-	err := parsedTemplate.Execute(w, nil)
-	if err != nil {
-		fmt.Println("failed to execute the template:", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	}
+// NewTemplates will set the app config
+func NewTemplates(newConfig *config.AppConfig) {
+	app = newConfig
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	tc, err := createTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	tc := app.TemplateCache
 	t, ok := tc[tmpl]
 
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("failed to get the template:")
 	}
 
 	buff := new(bytes.Buffer)
-	err = t.Execute(buff, nil)
+	err := t.Execute(buff, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,7 +38,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	// get all pages from the templates directory
