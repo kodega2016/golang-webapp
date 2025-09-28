@@ -10,6 +10,15 @@
             <p>Contact us for more details.</p>
             <p>Thank you for visiting our website!</p>
             <p>This is from the handlers:{{index .StringMap "test"}}</p>
+            <p>IP address:{{index .StringMap "ip_address"}}</p>
+
+            <p>
+            {{if ne (index .StringMap "ip_address") ""}}
+            Your IP address is {{index .StringMap "ip_address"}}
+            {{else}}
+            Unable to determine your IP address.
+            {{end}}
+            </p>
         </div>
     </div>
 </div>

@@ -26,7 +26,7 @@ func main() {
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.InProduction
 
-	app.Sessoon = session
+	app.Session = session
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {

@@ -13,5 +13,5 @@ type AppConfig struct {
 	TemplateCache map[string]*template.Template
 	InfoLogger    *log.Logger
 	InProduction  bool
-	Sessoon       *scs.SessionManager
+	Session       *scs.SessionManager
 }
