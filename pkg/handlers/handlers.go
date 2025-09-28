@@ -2,7 +2,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/kodega2016/booking-app/pkg/config"
@@ -67,4 +69,24 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
 	fmt.Fprintf(w, "start date:%s end date:%s", start, end)
+}
+
+func (m *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+	resp := jsonResponse{
+		OK:      false,
+		Message: "logged in failed.",
+	}
+
+	out, err := json.MarshalIndent(resp, "", "\n")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+}
+
+type jsonResponse struct {
+	OK      bool   `json:"ok"`
+	Message string `json:"message"`
 }
