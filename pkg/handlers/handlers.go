@@ -66,6 +66,5 @@ func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
-	fmt.Println("start date:", start, "end date:", end)
-	w.Write([]byte(fmt.Sprintf("start date:%s end date:%s", start, end)))
+	fmt.Fprintf(w, "start date:%s end date:%s", start, end)
 }
