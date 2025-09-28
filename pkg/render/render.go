@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/justinas/nosurf"
 	"github.com/kodega2016/booking-app/pkg/config"
 	"github.com/kodega2016/booking-app/pkg/models"
 )
@@ -19,11 +20,12 @@ func NewTemplates(newConfig *config.AppConfig) {
 	app = newConfig
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -38,7 +40,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 		log.Fatal("failed to get the template:")
 	}
 
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 
 	buff := new(bytes.Buffer)
 	err := t.Execute(buff, td)
