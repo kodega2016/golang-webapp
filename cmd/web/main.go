@@ -4,16 +4,30 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
+	"github.com/alexedwards/scs/v2"
 	"github.com/kodega2016/booking-app/pkg/config"
 	"github.com/kodega2016/booking-app/pkg/handlers"
 	"github.com/kodega2016/booking-app/pkg/render"
 )
 
-var portNumber = ":8080"
+var (
+	portNumber = ":8080"
+	app        config.AppConfig
+	session    *scs.SessionManager
+)
 
 func main() {
-	var app config.AppConfig
+	// setting up the session manager
+	session = scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.InProduction
+
+	app.Sessoon = session
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
