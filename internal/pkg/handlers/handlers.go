@@ -7,9 +7,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kodega2016/booking-app/pkg/config"
-	"github.com/kodega2016/booking-app/pkg/models"
-	"github.com/kodega2016/booking-app/pkg/render"
+	"github.com/kodega2016/booking-app/internal/pkg/config"
+	"github.com/kodega2016/booking-app/internal/pkg/models"
+	"github.com/kodega2016/booking-app/internal/pkg/render"
 )
 
 var Repo *Repository

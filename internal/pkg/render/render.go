@@ -9,8 +9,8 @@ import (
 	"text/template"
 
 	"github.com/justinas/nosurf"
-	"github.com/kodega2016/booking-app/pkg/config"
-	"github.com/kodega2016/booking-app/pkg/models"
+	"github.com/kodega2016/booking-app/internal/pkg/config"
+	"github.com/kodega2016/booking-app/internal/pkg/models"
 )
 
 var app *config.AppConfig

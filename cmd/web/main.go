@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/kodega2016/booking-app/pkg/config"
-	"github.com/kodega2016/booking-app/pkg/handlers"
-	"github.com/kodega2016/booking-app/pkg/render"
+	"github.com/kodega2016/booking-app/internal/pkg/config"
+	"github.com/kodega2016/booking-app/internal/pkg/handlers"
+	"github.com/kodega2016/booking-app/internal/pkg/render"
 )
 
 var (
