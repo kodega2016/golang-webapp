@@ -22,6 +22,19 @@ var (
 
 func main() {
 	gob.Register(models.Reservation{})
+
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Application running on port %v\n", portNumber)
+	srv := http.Server{
+		Addr: portNumber, Handler: routes(&app),
+	}
+	srv.ListenAndServe()
+}
+
+func run() error {
 	// setting up the session manager
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -33,21 +46,14 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
-
 	repo := handlers.NewRepo(&app)
 
 	handlers.NewHandlers(repo)
 	render.NewTemplates(&app)
-
-	fmt.Printf("Application running on port %v\n", portNumber)
-
-	srv := http.Server{
-		Addr: portNumber, Handler: routes(&app),
-	}
-
-	srv.ListenAndServe()
+	return nil
 }
