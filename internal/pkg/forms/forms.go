@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/asaskevich/govalidator"
 )
 
 // Form is custom data types with url values and errors
@@ -24,10 +26,7 @@ func New(data url.Values) *Form {
 // Has check the form has the specific field value or not
 func (form *Form) Has(field string, r *http.Request) bool {
 	x := r.Form.Get(field)
-	if x == "" {
-		return false
-	}
-	return true
+	return x != ""
 }
 
 // Valid returns the validation state of the form
@@ -52,4 +51,10 @@ func (form *Form) MinLength(field string, length int, r *http.Request) bool {
 		return false
 	}
 	return true
+}
+
+func (form *Form) IsEmail(field string) {
+	if !govalidator.IsEmail(form.Get(field)) {
+		form.Errors.Add(field, "Invalid email address.")
+	}
 }
