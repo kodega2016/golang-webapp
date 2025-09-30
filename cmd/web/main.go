@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/kodega2016/booking-app/internal/pkg/config"
 	"github.com/kodega2016/booking-app/internal/pkg/handlers"
+	"github.com/kodega2016/booking-app/internal/pkg/models"
 	"github.com/kodega2016/booking-app/internal/pkg/render"
 )
 
@@ -19,6 +21,7 @@ var (
 )
 
 func main() {
+	gob.Register(models.Reservation{})
 	// setting up the session manager
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
